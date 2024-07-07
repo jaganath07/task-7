@@ -1,0 +1,45 @@
+
+  <script>
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', 'https://restcountries.com/v3.1/all', true);
+
+    xhr.onload = function() {
+      if (xhr.status == 200) {
+        var data = JSON.parse(xhr.responseText);
+
+        var asianCountries = data.filter(function(country) {
+          return country.region === 'Asia';
+        });
+        console.log('Asian Countries:', asianCountries);
+
+        var smallPopulationCountries = data.filter(function(country) {
+          return country.population < 200000;
+        });
+        console.log('Countries with population less than 2 lakhs:', smallPopulationCountries);
+
+        data.forEach(function(country) {
+          console.log('Name: ' + country.name.common + ', Capital: ' + (country.capital ? country.capital[0] : 'N/A') + ', Flag: ' + country.flags.svg);
+        });
+
+        var totalPopulation = data.reduce(function(acc, country) {
+          return acc + country.population;
+        }, 0);
+        console.log('Total Population:', totalPopulation);
+
+        var countriesUsingUSD = data.filter(function(country) {
+          return country.currencies && Object.keys(country.currencies).includes('USD');
+        });
+        console.log('Countries using US Dollars:', countriesUsingUSD);
+      } else {
+        console.error('Error fetching data:', xhr.status, xhr.statusText);
+      }
+    };
+
+    xhr.onerror = function() {
+      console.error('Request failed');
+    };
+
+    xhr.send();
+  </script>
+</body>
+</html>
